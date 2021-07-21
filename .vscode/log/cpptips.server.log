@@ -6783,3 +6783,4 @@
 [2021-07-21T17:01:58.937] [DEBUG] cpptips - onDidOpenTextDocument file:///home/freeverc/Projects/Other/pointcloud_cluster/.vscode/.git/271b5d28df999fac933b6e74bd0eff9a_main.cpp
 [2021-07-21T17:02:34.943] [INFO] cpptips - main.cpp
 [2021-07-21T17:02:35.646] [INFO] cpptips - 
+[2021-07-21T17:22:42.931] [DEBUG] cpptips - on onShutdown
