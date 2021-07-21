@@ -6754,3 +6754,32 @@
 [2021-07-21T16:58:19.949] [DEBUG] cpptips - begin getDefinePoint
 [2021-07-21T16:58:19.949] [MARK] cpptips - getDefinePoint
 [2021-07-21T16:58:19.951] [MARK] cpptips - getDefinePoint
+[2021-07-21T16:59:36.076] [INFO] cpptips - 90 62
+[2021-07-21T16:59:36.076] [DEBUG] cpptips - begin getDefinePoint
+[2021-07-21T16:59:36.076] [MARK] cpptips - getDefinePoint
+[2021-07-21T16:59:36.076] [INFO] cpptips - filepath: /home/freeverc/Projects/Other/pointcloud_cluster//main.cpp
+[2021-07-21T16:59:36.076] [INFO] cpptips - _filename: /home/freeverc/Projects/Other/pointcloud_cluster//main.cpp
+[2021-07-21T16:59:36.076] [MARK] cpptips - getDefinePoint
+[2021-07-21T17:01:13.588] [INFO] cpptips - {"changes":[{"uri":"file:///home/freeverc/Projects/Other/pointcloud_cluster/src/main.cpp","type":1},{"uri":"file:///home/freeverc/Projects/Other/pointcloud_cluster/main.cpp","type":3}]}
+[2021-07-21T17:01:13.588] [INFO] cpptips - Set {
+  'file:///home/freeverc/Projects/Other/pointcloud_cluster/src/main.cpp'
+}
+[2021-07-21T17:01:13.655] [DEBUG] cpptips - reloadOneIncludeFileCallBack: success
+[2021-07-21T17:01:15.287] [INFO] cpptips - {"changes":[{"uri":"file:///home/freeverc/Projects/Other/pointcloud_cluster/cluster/src/main.cpp","type":1},{"uri":"file:///home/freeverc/Projects/Other/pointcloud_cluster/src/main.cpp","type":3}]}
+[2021-07-21T17:01:15.287] [INFO] cpptips - Set {
+  'file:///home/freeverc/Projects/Other/pointcloud_cluster/src/main.cpp',
+  'file:///home/freeverc/Projects/Other/pointcloud_cluster/cluster/src/main.cpp'
+}
+[2021-07-21T17:01:17.201] [INFO] cpptips - {"changes":[{"uri":"file:///home/freeverc/Projects/Other/pointcloud_cluster/cluster/build/CMakeFiles/3.10.2/CompilerIdCXX/CMakeCXXCompilerId.cpp","type":1},{"uri":"file:///home/freeverc/Projects/Other/pointcloud_cluster/cluster/build/CMakeFiles/feature_tests.c","type":1},{"uri":"file:///home/freeverc/Projects/Other/pointcloud_cluster/cluster/build/CMakeFiles/3.10.2/CompilerIdC/CMakeCCompilerId.c","type":1},{"uri":"file:///home/freeverc/Projects/Other/pointcloud_cluster/build/CMakeFiles/3.10.2/CompilerIdCXX/CMakeCXXCompilerId.cpp","type":3},{"uri":"file:///home/freeverc/Projects/Other/pointcloud_cluster/build/CMakeFiles/feature_tests.c","type":3},{"uri":"file:///home/freeverc/Projects/Other/pointcloud_cluster/build/CMakeFiles/3.10.2/CompilerIdC/CMakeCCompilerId.c","type":3}]}
+[2021-07-21T17:01:17.201] [INFO] cpptips - Set {
+  'file:///home/freeverc/Projects/Other/pointcloud_cluster/build/CMakeFiles/3.10.2/CompilerIdC/CMakeCCompilerId.c',
+  'file:///home/freeverc/Projects/Other/pointcloud_cluster/build/CMakeFiles/feature_tests.c',
+  'file:///home/freeverc/Projects/Other/pointcloud_cluster/build/CMakeFiles/3.10.2/CompilerIdCXX/CMakeCXXCompilerId.cpp',
+  'file:///home/freeverc/Projects/Other/pointcloud_cluster/cluster/build/CMakeFiles/3.10.2/CompilerIdC/CMakeCCompilerId.c',
+  'file:///home/freeverc/Projects/Other/pointcloud_cluster/cluster/build/CMakeFiles/feature_tests.c',
+  'file:///home/freeverc/Projects/Other/pointcloud_cluster/cluster/build/CMakeFiles/3.10.2/CompilerIdCXX/CMakeCXXCompilerId.cpp'
+}
+[2021-07-21T17:01:58.937] [INFO] cpptips - /home/freeverc/Projects/Other/pointcloud_cluster/.vscode/.git/271b5d28df999fac933b6e74bd0eff9a_main.cpp
+[2021-07-21T17:01:58.937] [DEBUG] cpptips - onDidOpenTextDocument file:///home/freeverc/Projects/Other/pointcloud_cluster/.vscode/.git/271b5d28df999fac933b6e74bd0eff9a_main.cpp
+[2021-07-21T17:02:34.943] [INFO] cpptips - main.cpp
+[2021-07-21T17:02:35.646] [INFO] cpptips - 
