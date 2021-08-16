@@ -1,92 +1,77 @@
+#include "cluster.h"
 #include "opencv2/core.hpp"
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
 
 #include <iostream>
-#include <pcl/ModelCoefficients.h>
-#include <pcl/features/normal_3d.h>
-#include <pcl/filters/extract_indices.h>
-#include <pcl/filters/voxel_grid.h>
-#include <pcl/io/pcd_io.h>
-#include <pcl/io/ply_io.h>
-#include <pcl/kdtree/kdtree.h>
-#include <pcl/point_types.h>
-#include <pcl/segmentation/extract_clusters.h>
 #include <string>
 #include <vector>
 
-uint8_t kClusterColors[6][3] = {{255, 0, 0},   {0, 255, 0},   {0, 0, 255},
-                                {128, 128, 0}, {128, 0, 128}, {0, 128, 128}};
+int main(int argc, char *argv[]) {
+  std::cout << "Point cloud clustering : " << std::endl;
+  std::cout << "./point_cluster point_cloud_path clustered_path "
+               "cluster_method(eu, sv, km)"
+            << std::endl;
+  std::string point_cloud_path = "../../data/data1.pcd";
+  std::string filtered_path = "../../results/filtered.pcd";
+  std::string clustered_path = "../../results/clustered.pcd";
+  std::string method = "eu";
+  if (argc == 1) {
+    std::cout << "No input file ! " << std::endl;
+  } else if (argc == 2) {
+    point_cloud_path = argv[1];
+    std::cout << "Input : " << point_cloud_path << std::endl;
+  } else if (argc == 3) {
+    point_cloud_path = argv[1];
+    clustered_path = argv[2];
+    std::cout << "Input : " << point_cloud_path << std::endl;
+    std::cout << "Output : " << clustered_path << std::endl;
+  } else if (argc >= 4) {
+    point_cloud_path = argv[1];
+    clustered_path = argv[2];
+    method = argv[3];
+    std::cout << "Input : " << point_cloud_path << std::endl;
+    std::cout << "Output : " << clustered_path << std::endl;
+  }
 
-int main() {
-  std::cout << "Hello " << std::endl;
-
-  std::string file_point_cloud = "../data1.pcd";
-  std::string filtered_point_cloud = "../filtered.pcd";
-  pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud(
-      new pcl::PointCloud<pcl::PointXYZ>);
-
-  if (pcl::io::loadPCDFile<pcl::PointXYZ>(file_point_cloud, *point_cloud) ==
-      -1) //* load the file
-  {
+  // Read point cloud.
+  pcl::PointCloud<PointT>::Ptr point_cloud(new pcl::PointCloud<PointT>);
+  if (pcl::io::loadPCDFile<PointT>(point_cloud_path, *point_cloud) == -1) {
     PCL_ERROR("Couldn't read file\n");
     return (-1);
   }
+  // Do clustering.
+  pcl::PointCloud<PointLT>::Ptr clustered_point_cloud(
+      new pcl::PointCloud<PointLT>);
   std::cout << "Size : " << point_cloud->width << " " << point_cloud->height
             << std::endl;
 
-  pcl::VoxelGrid<pcl::PointXYZ> vg;
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered(
-      new pcl::PointCloud<pcl::PointXYZ>);
-  vg.setInputCloud(point_cloud);
-  vg.setLeafSize(0.001f, 0.001f, 0.001f);
-  vg.filter(*cloud_filtered);
-  std::cout << "PointCloud after filtering has: " << cloud_filtered->size()
-            << " data points." << std::endl; //*
-
-  pcl::io::savePCDFileASCII(filtered_point_cloud, *cloud_filtered);
-
-  // Creating the KdTree object for the search method of the extraction
-  pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(
-      new pcl::search::KdTree<pcl::PointXYZ>);
-  tree->setInputCloud(point_cloud);
-
-  std::vector<pcl::PointIndices> cluster_indices;
-  pcl::EuclideanClusterExtraction<pcl::PointXYZ> ec;
-  ec.setClusterTolerance(0.005); // 2cm
-  ec.setMinClusterSize(100);
-  ec.setMaxClusterSize(250000);
-  ec.setSearchMethod(tree);
-  ec.setInputCloud(cloud_filtered);
-  ec.extract(cluster_indices);
-  std::cout << "cluster num : " << cluster_indices.size() << std::endl;
-
-  pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_cluster(
-      new pcl::PointCloud<pcl::PointXYZRGB>);
-  int j = 0;
-  for (std::vector<pcl::PointIndices>::const_iterator it =
-           cluster_indices.begin();
-       it != cluster_indices.end(); ++it) {
-    for (std::vector<int>::const_iterator pit = it->indices.begin();
-         pit != it->indices.end(); ++pit) {
-      pcl::PointXYZRGB p;
-      p.x = (*cloud_filtered)[*pit].x;
-      p.y = (*cloud_filtered)[*pit].y;
-      p.z = (*cloud_filtered)[*pit].z;
-      p.r = kClusterColors[j][0];
-      p.g = kClusterColors[j][1];
-      p.b = kClusterColors[j][2];
-      cloud_cluster->push_back(p);
+  if (method == "eu") {
+    cluster_by_euclidean(point_cloud, clustered_point_cloud);
+  } else if (method == "sv") {
+    cluster_by_super_voxel(point_cloud, clustered_point_cloud);
+  } else if (method == "rg") {
+    cluster_by_region_growth(point_cloud, clustered_point_cloud);
+  } else if (method == "km") {
+    if (argc == 5) {
+      int k = atoi(argv[4]);
+      cluster_by_kmeans(point_cloud, clustered_point_cloud, k);
+    } else {
+      cluster_by_kmeans(point_cloud, clustered_point_cloud);
     }
-    cloud_cluster->width = cloud_cluster->size();
-    cloud_cluster->height = 1;
-    cloud_cluster->is_dense = true;
-
-    std::cout << "PointCloud representing the Cluster: "
-              << cloud_cluster->size() << " data points." << std::endl;
-    j++;
   }
 
-  std::string file_cloud_clustered("../cloud_clustered.pcd");
-  pcl::io::savePCDFileASCII(file_cloud_clustered, *cloud_cluster);
+  // Write point cloud.
+  pcl::io::savePCDFileASCII(clustered_path, *clustered_point_cloud);
+
+  pcl::visualization::PCLVisualizer::Ptr viewer(
+      new pcl::visualization::PCLVisualizer("3D Viewer"));
+  viewer->setBackgroundColor(0, 0, 0);
+
+  viewer->addPointCloud(clustered_point_cloud, "clustered point cloud");
+
+  while (!viewer->wasStopped()) {
+    viewer->spinOnce(100);
+  }
+  return (0);
 }

@@ -15,7 +15,8 @@ link_directories(${OpenCV_LIBRARY_DIRS})
 
 add_definitions(${PCL_DEFINITIONS})
 
-add_executable(point_cluster main.cpp)
+add_executable(point_cluster main.cpp cluster.h cluster.cpp)
+# add_executable(point_cluster sc.cpp)
 
 target_link_libraries(point_cluster ${PCL_LIBRARIES})
 target_link_libraries(point_cluster ${OpenCV_LIBRARIES})
