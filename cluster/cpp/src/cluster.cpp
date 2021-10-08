@@ -209,6 +209,13 @@ void cluster_by_kmeans(pcl::PointCloud<PointT>::Ptr &point_cloud,
   std::cout << "Finished clustering by kmeans." << std::endl;
 }
 
+void cluster_by_lccp(pcl::PointCloud<PointT>::Ptr& point_cloud,
+    pcl::PointCloud<PointLT>::Ptr& clustered_point_cloud)
+{
+    int a;
+
+}
+
 void IndiceToClustered(pcl::PointCloud<PointT>::Ptr &point_cloud,
                        std::vector<pcl::PointIndices> &cluster_indices,
                        pcl::PointCloud<PointLT>::Ptr &clustered_point_cloud) {

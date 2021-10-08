@@ -5,6 +5,7 @@ src/util/version.h
 # Custom directories
 .idea/
 .vscode
+.vs
 .DS_Store
 build*/
 install-debug/
@@ -13,6 +14,7 @@ data/
 doc/_build
 bin*/
 bin/
+*/data/
 
 # Compiled Object files
 *.slo

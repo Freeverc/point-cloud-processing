@@ -64,14 +64,14 @@ int main(int argc, char *argv[]) {
   // Write point cloud.
   pcl::io::savePCDFileASCII(clustered_path, *clustered_point_cloud);
 
-  pcl::visualization::PCLVisualizer::Ptr viewer(
-      new pcl::visualization::PCLVisualizer("3D Viewer"));
-  viewer->setBackgroundColor(0, 0, 0);
+  //pcl::visualization::PCLVisualizer::Ptr viewer(
+  //    new pcl::visualization::PCLVisualizer("3D Viewer"));
+  //viewer->setBackgroundColor(0, 0, 0);
 
-  viewer->addPointCloud(clustered_point_cloud, "clustered point cloud");
+  //viewer->addPointCloud(clustered_point_cloud, "clustered point cloud");
 
-  while (!viewer->wasStopped()) {
-    viewer->spinOnce(100);
-  }
+  //while (!viewer->wasStopped()) {
+  //  viewer->spinOnce(100);
+  //}
   return (0);
 }

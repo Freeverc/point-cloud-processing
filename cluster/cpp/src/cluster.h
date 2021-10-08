@@ -13,7 +13,7 @@
 #include <pcl/segmentation/extract_clusters.h>
 #include <pcl/segmentation/region_growing.h>
 #include <pcl/segmentation/supervoxel_clustering.h>
-#include <pcl/visualization/pcl_visualizer.h>
+//#include <pcl/visualization/pcl_visualizer.h>
 #include <vector>
 
 // Types
@@ -38,6 +38,9 @@ void cluster_by_region_growth(
 void cluster_by_kmeans(pcl::PointCloud<PointT>::Ptr &point_cloud,
                        pcl::PointCloud<PointLT>::Ptr &clustered_point_cloud,
                        int k = 4);
+
+void cluster_by_lccp(pcl::PointCloud<PointT>::Ptr &point_cloud,
+                       pcl::PointCloud<PointLT>::Ptr &clustered_point_cloud );
 
 void IndiceToClustered(pcl::PointCloud<PointT>::Ptr &point_cloud,
                        std::vector<pcl::PointIndices> &cluster_indices,
