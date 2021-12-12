@@ -18,12 +18,15 @@ inlier_cloud.paint_uniform_color([1.0, 0, 0])
 outlier_cloud = point_cloud.select_by_index(inliers, invert=True)
 outlier_cloud.paint_uniform_color([0, 1, 0])
 o3d.visualization.draw_geometries([inlier_cloud, outlier_cloud], height=600, width=800)
+o3d.io.write_point_cloud("inlier.ply", inlier_cloud)
+o3d.io.write_point_cloud("outlier.ply", outlier_cloud)
 
 # Remove outliers
 cl, ind = outlier_cloud.remove_statistical_outlier(nb_neighbors=20,
                                                      std_ratio=2.0)
 point_cloud = outlier_cloud.select_by_index(ind)
 o3d.visualization.draw_geometries([point_cloud], height=600, width=800)
+o3d.io.write_point_cloud("clean.ply", point_cloud)
 
 with o3d.utility.VerbosityContextManager(o3d.utility.VerbosityLevel.Debug) as cm:
     labels = np.array(point_cloud.cluster_dbscan(eps=1, min_points=100, print_progress=True))
@@ -34,6 +37,7 @@ colors = plt.get_cmap("tab20")(labels / (max_label if max_label > 0 else 1))
 colors[labels < 0] = 0
 point_cloud.colors = o3d.utility.Vector3dVector(colors[:, :3])
 o3d.visualization.draw_geometries([point_cloud], height=600, width=800)
+o3d.io.write_point_cloud("color.ply", point_cloud)
 
 # Get volume
 label_list = set(labels)
