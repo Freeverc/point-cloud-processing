@@ -1,6 +1,5 @@
 # Point Cloud Proccessing
 Some simple point cloud processing projects base on pcl, matlab, open3d, etc.
-
 ## Point Cloud Clustering
 - Point cloud clustering in multi methods for lazor point cloud data.
   + Voxel sample and euclidean cluster 
@@ -8,8 +7,10 @@ Some simple point cloud processing projects base on pcl, matlab, open3d, etc.
   + K-means 
   + Region growth 
   + LCCP
+  + DBScan
 - Tools 
   + cpp, pcl
+  + python, open3d 
 
 ## Point Cloud Measuring 
 - Measuring the error of mechanical parts.
@@ -28,7 +29,13 @@ Some simple point cloud processing projects base on pcl, matlab, open3d, etc.
 - Tools 
   + python, open3d
 
-## Mesh to scaned images 
+## Point Cloud Compressing
+- Compressing
+  + Compressing the point cloud by octree 
+- Tools 
+  + c++, pcl
+
+## Mesh To Scaned Images 
 - Read a mesh and transfrom it to scaned slices.
   + c++, opencv
   + Calculate the intersections of a plane and a triangle mesh
