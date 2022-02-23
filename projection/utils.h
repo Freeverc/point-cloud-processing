@@ -31,9 +31,8 @@ void down_sample(pcl::PointCloud<PointT>::Ptr &point_cloud,
 void filter(pcl::PointCloud<PointT>::Ptr &point_cloud,
             pcl::PointCloud<PointT>::Ptr &filtered_point_cloud);
 
-void plane_detection(pcl::PointCloud<PointT>::Ptr &point_cloud,
-                     pcl::PointCloud<PointT>::Ptr &inner_point_cloud,float resolution = 0.001);
+void plane_detection_and_transform(pcl::PointCloud<PointT>::Ptr &point_cloud,
+                                   pcl::PointCloud<PointT>::Ptr &inner_point_cloud,
+                                   pcl::PointCloud<PointT>::Ptr &trans_point_cloud);
 
-void IndiceToClustered(pcl::PointCloud<PointT>::Ptr &point_cloud,
-                       std::vector<pcl::PointIndices> &cluster_indices,
-                       pcl::PointCloud<PointLT>::Ptr &clustered_point_cloud);
+void Rasterization(pcl::PointCloud<PointT>::Ptr &point_cloud, std::string &file_name, float resolution = 0.001);

@@ -15,6 +15,6 @@ link_directories(${OpenCV_LIBRARY_DIRS})
 
 add_definitions(${PCL_DEFINITIONS})
 
-add_executable(measure main.cpp measure.h measure.cpp)
-target_link_libraries (measure ${PCL_LIBRARIES})
-target_link_libraries (measure ${OpenCV_LIBRARIES})
+add_executable(projection main.cpp utils.h utils.cpp)
+target_link_libraries (projection ${PCL_LIBRARIES})
+target_link_libraries (projection ${OpenCV_LIBRARIES})
