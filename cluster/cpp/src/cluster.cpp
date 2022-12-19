@@ -209,11 +209,9 @@ void cluster_by_kmeans(pcl::PointCloud<PointT>::Ptr &point_cloud,
   std::cout << "Finished clustering by kmeans." << std::endl;
 }
 
-void cluster_by_lccp(pcl::PointCloud<PointT>::Ptr& point_cloud,
-    pcl::PointCloud<PointLT>::Ptr& clustered_point_cloud)
-{
-    int a;
-
+void cluster_by_lccp(pcl::PointCloud<PointT>::Ptr &point_cloud,
+                     pcl::PointCloud<PointLT>::Ptr &clustered_point_cloud) {
+  int a;
 }
 
 void IndiceToClustered(pcl::PointCloud<PointT>::Ptr &point_cloud,
@@ -237,4 +235,19 @@ void IndiceToClustered(pcl::PointCloud<PointT>::Ptr &point_cloud,
   clustered_point_cloud->width = clustered_point_cloud->size();
   clustered_point_cloud->height = 1;
   clustered_point_cloud->is_dense = true;
+}
+
+void cluster_by_normal(pcl::PointCloud<PointT>::Ptr &point_cloud,
+                       pcl::PointCloud<PointLT>::Ptr &clustered_point_cloud,
+                       int k) {
+  // Create a search tree, use KDTreee for non-organized data.
+  pcl::search::Search<PointT>::Ptr tree;
+  if (point_cloud->isOrganized()) {
+    tree.reset(new pcl::search::OrganizedNeighbor<PointT>());
+  } else {
+    tree.reset(new pcl::search::KdTree<PointT>(false));
+  }
+
+  tree->setInputCloud(point_cloud);
+  ;
 }
