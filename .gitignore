@@ -4,8 +4,12 @@ src/util/version.h
 
 # Custom directories
 .idea/
+.cmake
 .vscode
 .vs
+.dll
+.ilk
+.log
 .DS_Store
 build*/
 install-debug/
