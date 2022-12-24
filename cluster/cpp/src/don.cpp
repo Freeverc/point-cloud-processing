@@ -13,6 +13,37 @@
 
 using namespace pcl;
 
+// Types
+typedef pcl::PointXYZ PointT;
+typedef pcl::PointCloud<PointT> PointCloudT;
+typedef pcl::PointNormal PointNT;
+typedef pcl::PointCloud<PointNT> PointNCloudT;
+typedef pcl::PointXYZL PointLT;
+typedef pcl::PointCloud<PointLT> PointLCloudT;
+
+void IndiceToClustered(pcl::PointCloud<PointNT>::Ptr &point_cloud,
+                       std::vector<pcl::PointIndices> &cluster_indices,
+                       pcl::PointCloud<PointLT>::Ptr &clustered_point_cloud) {
+  int j = 0;
+  for (std::vector<pcl::PointIndices>::const_iterator it =
+           cluster_indices.begin();
+       it != cluster_indices.end(); ++it) {
+    for (std::vector<int>::const_iterator pit = it->indices.begin();
+         pit != it->indices.end(); ++pit) {
+      PointLT p;
+      p.x = (*point_cloud)[*pit].x;
+      p.y = (*point_cloud)[*pit].y;
+      p.z = (*point_cloud)[*pit].z;
+      p.label = j;
+      clustered_point_cloud->push_back(p);
+    }
+    j++;
+  }
+  clustered_point_cloud->width = clustered_point_cloud->size();
+  clustered_point_cloud->height = 1;
+  clustered_point_cloud->is_dense = true;
+}
+
 int main(int argc, char *argv[]) {
   /// The smallest scale to use in the DoN filter.
   double scale1;
@@ -186,14 +217,18 @@ int main(int argc, char *argv[]) {
   pcl::EuclideanClusterExtraction<PointNormal> ec;
 
   ec.setClusterTolerance(segradius);
-  ec.setMinClusterSize(50);
-  ec.setMaxClusterSize(100000);
+  ec.setMinClusterSize(100);
+  ec.setMaxClusterSize(1000000);
   ec.setSearchMethod(segtree);
   ec.setInputCloud(doncloud);
   ec.extract(cluster_indices);
 
+  // pcl::PointCloud<PointLT>::Ptr clustered_point_cloud;
+
   // 输出
   int j = 0;
+  pcl::PointCloud<PointLT>::Ptr clustered_point_cloud(
+      new pcl::PointCloud<PointLT>);
   for (std::vector<pcl::PointIndices>::const_iterator it =
            cluster_indices.begin();
        it != cluster_indices.end(); ++it, j++) {
@@ -202,6 +237,12 @@ int main(int argc, char *argv[]) {
     for (std::vector<int>::const_iterator pit = it->indices.begin();
          pit != it->indices.end(); ++pit) {
       cloud_cluster_don->points.push_back((*doncloud)[*pit]);
+      PointLT p;
+      p.x = (*doncloud)[*pit].x;
+      p.y = (*doncloud)[*pit].y;
+      p.z = (*doncloud)[*pit].z;
+      p.label = j;
+      clustered_point_cloud->push_back(p);
     }
 
     cloud_cluster_don->width = cloud_cluster_don->size();
@@ -219,4 +260,6 @@ int main(int argc, char *argv[]) {
     ss << "don_cluster_" << j << ".pcd";
     writer.write<pcl::PointNormal>(ss.str(), *cloud_cluster_don, false);
   }
+
+  pcl::io::savePCDFileASCII("all_clustered.pcd", *clustered_point_cloud);
 }
