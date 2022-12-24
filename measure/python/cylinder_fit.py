@@ -1,4 +1,6 @@
 from scipy import optimize
+import open3d.visualization.gui as gui
+import open3d.visualization.rendering as rendering
 import open3d as o3d
 import numpy as np
 import matplotlib.pyplot as plt
@@ -19,8 +21,7 @@ def yclinerrors(para, points):
     y0 = 0
 
     x0, z0, r0 = para
-    return (points[:, 0] - x0) ** 2 + (points[:, 1] - y0) ** 2 + (points[:, 2] - z0) ** 2 - (
-            a0 * (points[:, 0] - x0) + b0 * (points[:, 1] - y0) + c0 * (points[:, 2] - z0)) ** 2 - r0 ** 2
+    return (points[:, 0] - x0) ** 2 +  (points[:, 2] - z0) ** 2 - r0 ** 2
 
 
 def zclinerrors(para, points):
@@ -36,8 +37,10 @@ def cluster_point_cloud(point_cloud):
     clusters = []
     with o3d.utility.VerbosityContextManager(
             o3d.utility.VerbosityLevel.Debug) as cm:
+        # labels = np.array(
+        #     point_cloud.cluster_dbscan(eps=0.55, min_points=1000, print_progress=True))
         labels = np.array(
-            point_cloud.cluster_dbscan(eps=0.55, min_points=1000, print_progress=True))
+            point_cloud.cluster_dbscan(eps=0.6, min_points=1000, print_progress=True))
 
     max_label = labels.max()
     print(f"point cloud has {max_label + 1} clusters")
@@ -57,27 +60,41 @@ def cluster_point_cloud(point_cloud):
     #                                   up=[0.1204, -0.9852, 0.1215])
 
 def fit(clusters):
+    app = gui.Application.instance
+    app.initialize()
+
+    vis = o3d.visualization.O3DVisualizer("Open3D", 1024, 768)
+
     # 计算点集的x,y,z均值，x，y的范围，用于拟合参数初值
     params = []
     show =[]
+    i = 0
     for cluster in clusters:
+        i += 1
         points = np.asarray(cluster.points)
         print(np.shape(points))
         xm = np.mean(points[:,0])    # 特征点集x均值
         ym = np.mean(points[:,1])
         zm = np.mean(points[:,2])         
+
+        # xm = -17
+        # ym = np.mean(points[:,1])
+        # zm = 97
+        print('init : ', xm, ym, zm)
         xrange = np.max(points[:,0]) - np.min(points[:,0])    # 特征点集x范围
         yrange = np.max(points[:,1]) - np.min(points[:,1])
-        zrange = np.max(points[:,2]) - np.min(points[:,2])
+        zrange = np.max(points[:,2]) - np.min(points[:,2]) #
         r0 = max(xrange, zrange)
+        # r0 =15
         a = 0
         b = 1
         c = 0
 
         # 最小二乘拟合 
-        tparac = optimize.leastsq(yclinerrors, [xm, zm, r0], points, full_output=1,factor=5,ftol=0.01)
+        tparac = optimize.leastsq(yclinerrors, [xm, zm, r0], points , full_output=1)
+        # tparac = optimize.leastsq(yclinerrors, [xm, zm, r0], points , full_output=1, maxfev=1000, xtol=0.1, factor=0.2, ftol=0.2, epsfcn=0.01)
         print(np.shape(tparac))
-        print(tparac)
+        print(tparac[2]['fvec'])
         parac = np.array([tparac[0][0], ym, tparac[0][1], tparac[0][2]])
         params.append(parac)
         # ec = np.mean(np.abs(tparac[2]['fvec'])) / parac[6]
@@ -87,7 +104,7 @@ def fit(clusters):
         mesh_cylinder = o3d.geometry.TriangleMesh.create_cylinder(radius=parac[3],
                                                                 height=yrange)
         mesh_cylinder.compute_vertex_normals()
-        mesh_cylinder.paint_uniform_color([0.4, 0.8, 0.1])
+        mesh_cylinder.paint_uniform_color([0.45*i, 1-0.45 * i, 0.45])
         mesh_cylinder = mesh_cylinder.translate([0,0,0], relative=False)
         R = np.array([[1, 0, 0],[0, 0, 1],[0, 1, 0]])
         mesh_cylinder = mesh_cylinder.rotate(R)
@@ -112,17 +129,34 @@ def fit(clusters):
             points=o3d.utility.Vector3dVector(pts),
             lines=o3d.utility.Vector2iVector(lines),
         )
+
+        # o3d.visualization.draw_geometries([cluster, mesh_cylinder])
         show.append(cluster)
         show.append(mesh_cylinder)
-        show.append(line_set)
+        vis.add_geometry("Points" + str(i), cluster)
+        vis.add_geometry("Cylinder" + str(i), mesh_cylinder)
+        vis.add_3d_label([parac[0], parac[1], parac[2] - parac[3]],  "x0 : " + str(parac[0]) + " z0 : " + str(parac[2]) + " r : " + str(parac[3]))
+
     # show[1] = show[1].translate([parac[0], parac[1], parac[2]], relative=False)
-    o3d.visualization.draw_geometries(show)
+    r_diff = params[0][-1] - params[1][-1]
+    print('r_diff', r_diff)
+    vis.add_3d_label([params[0][0], params[0][1]+ params[0][3], params[0][2]], "r diff : " + str(r_diff))
+    # o3d.visualization.draw_geometries(show)
+
+    vis.show_settings = True
+    # eye = [params[0][0], params[0][1], params[0][2]]
+    # n = [0,0,1]
+    vis.reset_camera_to_default()
+
+    app.add_window(vis)
+    app.run()
+
     return params
 
 def main():
 
     # Load data
-    file_path = '/home/freeverc/Projects/point-cloud-processing/measure/python/data/clouds.pcd'
+    file_path = 'data/clouds.pcd'
     point_cloud = o3d.io.read_point_cloud(file_path)
     print(len(point_cloud.points))
 
@@ -131,7 +165,6 @@ def main():
     clusters = cluster_point_cloud(point_cloud)
     params = fit(clusters)
     print(params)
-    print(params[0][-1] - params[1][-1])
     
 
 if __name__ == '__main__':
