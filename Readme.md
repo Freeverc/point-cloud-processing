@@ -39,3 +39,10 @@ Some simple point cloud processing projects base on pcl, matlab, open3d, etc.
 - Read a mesh and transfrom it to scaned slices.
   + c++, opencv
   + Calculate the intersections of a plane and a triangle mesh
+
+## Point Cloud Tool
+- Filtering and ICP merge for several tooth point cloud
+- Poission meshing
+- Simple UI
+- Tools 
+  + python, open3d
